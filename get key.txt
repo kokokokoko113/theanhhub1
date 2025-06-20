@@ -1,0 +1,90 @@
+if not game:IsLoaded() then game.Loaded:Wait() end
+
+local HttpService = game:GetService("HttpService")
+getgenv().TheAnhKey = getgenv().TheAnhKey or HttpService:GenerateGUID(false)
+local key = getgenv().TheAnhKey
+
+-- UI
+local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+gui.Name = "KeySystem"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 250)
+frame.Position = UDim2.new(0.5, -200, 0.5, -125)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+local title = Instance.new("TextLabel", frame)
+title.Text = "🔑 Nhận Key sau khi chờ 60 giây"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255, 255, 0)
+
+local input = Instance.new("TextBox", frame)
+input.PlaceholderText = "Dán key tại đây"
+input.Size = UDim2.new(0.8, 0, 0, 40)
+input.Position = UDim2.new(0.1, 0, 0.3, 0)
+input.Text = ""
+input.TextScaled = true
+input.Font = Enum.Font.Gotham
+input.TextColor3 = Color3.fromRGB(255, 255, 255)
+input.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+Instance.new("UICorner", input).CornerRadius = UDim.new(0, 6)
+
+local copyBtn = Instance.new("TextButton", frame)
+copyBtn.Text = "Đang đếm ngược..."
+copyBtn.Size = UDim2.new(0.6, 0, 0, 35)
+copyBtn.Position = UDim2.new(0.2, 0, 0.55, 0)
+copyBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+copyBtn.Font = Enum.Font.GothamBold
+copyBtn.TextColor3 = Color3.new(1, 1, 1)
+copyBtn.AutoButtonColor = false
+Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 6)
+
+local result = Instance.new("TextLabel", frame)
+result.Size = UDim2.new(0.9, 0, 0, 30)
+result.Position = UDim2.new(0.05, 0, 0.75, 0)
+result.BackgroundTransparency = 1
+result.TextColor3 = Color3.new(1, 1, 1)
+result.Font = Enum.Font.Gotham
+result.Text = "Vui lòng chờ để lấy key..."
+result.TextSize = 14
+
+local confirm = Instance.new("TextButton", frame)
+confirm.Text = "Xác nhận"
+confirm.Size = UDim2.new(0.4, 0, 0, 35)
+confirm.Position = UDim2.new(0.3, 0, 0.88, 0)
+confirm.BackgroundColor3 = Color3.fromRGB(40, 150, 100)
+confirm.Font = Enum.Font.GothamBold
+confirm.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", confirm).CornerRadius = UDim.new(0, 6)
+
+-- Đếm ngược 60 giây
+task.spawn(function()
+	for i = 60, 0, -1 do
+		copyBtn.Text = "⏳ Chờ " .. i .. " giây để nhận key"
+		wait(1)
+	end
+	copyBtn.Text = "📋 Sao chép key"
+	copyBtn.BackgroundColor3 = Color3.fromRGB(70, 100, 160)
+	copyBtn.AutoButtonColor = true
+	copyBtn.MouseButton1Click:Connect(function()
+		setclipboard(key)
+		result.Text = "✅ Key đã sao chép: " .. key
+	end)
+end)
+
+-- Kiểm tra key
+confirm.MouseButton1Click:Connect(function()
+	if string.lower(input.Text) == string.lower(key) then
+		result.Text = "đúng rồi đó cu"
+		wait(1)
+		gui:Destroy()
+		-- Gọi GUI chính tại đây
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/kokokokoko113/theanhhub/refs/heads/main/code%20ngon%20nh%E1%BA%A5t.txt"))()
+	else
+		result.Text = "ngu :>"
+	end
+end)
